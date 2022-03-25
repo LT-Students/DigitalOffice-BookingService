@@ -6,23 +6,12 @@
 	  <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="6.0.2" />
 	  <PackageReference Include="AspNetCore.HealthChecks.UI.SqlServer.Storage" Version="6.0.4" />
 	  <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.3" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.3" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.3" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.3" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.3" />
 	  <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
 	  <PackageReference Include="Serilog.Enrichers.Environment" Version="2.2.0" />
 	  <PackageReference Include="Serilog.Enrichers.Process" Version="2.0.2" />
 	  <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
 	  <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
 	  <PackageReference Include="Serilog.Sinks.Seq" Version="5.1.1" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="LT.DigitalOffice.Kernel" Version="1.1.57" />
-	  <PackageReference Update="LT.DigitalOffice.Kernel.BrokerSupport" Version="1.0.5" />
-	  <PackageReference Update="LT.DigitalOffice.Kernel.RedisSupport" Version="1.0.4" />
-	  <PackageReference Update="LT.DigitalOffice.Models" Version="1.0.70" />
 	</ItemGroup>
 
 </Project>
