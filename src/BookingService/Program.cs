@@ -5,50 +5,50 @@ using Serilog;
 using System;
 
 var configuration = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
-    .Build();
+  .AddJsonFile("appsettings.json")
+  .Build();
 
 string seqServerUrl = Environment.GetEnvironmentVariable("seqServerUrl");
 if (string.IsNullOrEmpty(seqServerUrl))
 {
-    seqServerUrl = configuration["Serilog:WriteTo:1:Args:serverUrl"];
+  seqServerUrl = configuration["Serilog:WriteTo:1:Args:serverUrl"];
 }
 
 string seqApiKey = Environment.GetEnvironmentVariable("seqApiKey");
 if (string.IsNullOrEmpty(seqApiKey))
 {
-    seqApiKey = configuration["Serilog:WriteTo:1:Args:apiKey"];
+  seqApiKey = configuration["Serilog:WriteTo:1:Args:apiKey"];
 }
 
 Log.Logger = new LoggerConfiguration().ReadFrom
-    .Configuration(configuration)
-    .Enrich.WithProperty("Service", "BookingService")
-    .WriteTo.Seq(
-        serverUrl: seqServerUrl,
-        apiKey: seqApiKey)
-    .CreateLogger();
+  .Configuration(configuration)
+  .Enrich.WithProperty("Service", "BookingService")
+  .WriteTo.Seq(
+    serverUrl: seqServerUrl,
+    apiKey: seqApiKey)
+  .CreateLogger();
 
 try
 {
-    var builder = WebApplication.CreateBuilder(args);
+  var builder = WebApplication.CreateBuilder(args);
 
-    builder.Services.AddControllers();
+  builder.Services.AddControllers();
 
-    var app = builder.Build();
+  var app = builder.Build();
 
-    app.UseHttpsRedirection();
+  app.UseHttpsRedirection();
 
-    app.UseAuthorization();
+  app.UseAuthorization();
 
-    app.MapControllers();
+  app.MapControllers();
 
-    app.Run();
+  app.Run();
 }
 catch (Exception e)
 {
-    Log.Fatal(e, "Can not properly start BookingService.");
+  Log.Fatal(e, "Can not properly start BookingService.");
 }
 finally
 {
-    Log.CloseAndFlush();
+  Log.CloseAndFlush();
 }
