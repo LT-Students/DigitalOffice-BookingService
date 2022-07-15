@@ -1,54 +1,59 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 using System;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Serilog;
 
-var configuration = new ConfigurationBuilder()
-  .AddJsonFile("appsettings.json")
-  .Build();
-
-string seqServerUrl = Environment.GetEnvironmentVariable("seqServerUrl");
-if (string.IsNullOrEmpty(seqServerUrl))
+namespace LT.DigitalOffice.BookingService
 {
-  seqServerUrl = configuration["Serilog:WriteTo:1:Args:serverUrl"];
-}
+  public class Program
+  {
+    public static void Main(string[] args)
+    {
+      var configuration = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json")
+        .Build();
 
-string seqApiKey = Environment.GetEnvironmentVariable("seqApiKey");
-if (string.IsNullOrEmpty(seqApiKey))
-{
-  seqApiKey = configuration["Serilog:WriteTo:1:Args:apiKey"];
-}
+      string seqServerUrl = Environment.GetEnvironmentVariable("seqServerUrl");
+      if (string.IsNullOrEmpty(seqServerUrl))
+      {
+        seqServerUrl = configuration["Serilog:WriteTo:1:Args:serverUrl"];
+      }
 
-Log.Logger = new LoggerConfiguration().ReadFrom
-  .Configuration(configuration)
-  .Enrich.WithProperty("Service", "BookingService")
-  .WriteTo.Seq(
-    serverUrl: seqServerUrl,
-    apiKey: seqApiKey)
-  .CreateLogger();
+      string seqApiKey = Environment.GetEnvironmentVariable("seqApiKey");
+      if (string.IsNullOrEmpty(seqApiKey))
+      {
+        seqApiKey = configuration["Serilog:WriteTo:1:Args:apiKey"];
+      }
 
-try
-{
-  var builder = WebApplication.CreateBuilder(args);
+      Log.Logger = new LoggerConfiguration().ReadFrom
+        .Configuration(configuration)
+        .Enrich.WithProperty("Service", "BookingService")
+        .WriteTo.Seq(
+          serverUrl: seqServerUrl,
+          apiKey: seqApiKey)
+        .CreateLogger();
 
-  builder.Services.AddControllers();
+      try
+      {
+        CreateHostBuilder(args).Build().Run();
+      }
+      catch (Exception exc)
+      {
+        Log.Fatal(exc, "Can not properly start BookingService.");
+      }
+      finally
+      {
+        Log.CloseAndFlush();
+      }
+    }
 
-  var app = builder.Build();
-
-  app.UseHttpsRedirection();
-
-  app.UseAuthorization();
-
-  app.MapControllers();
-
-  app.Run();
-}
-catch (Exception e)
-{
-  Log.Fatal(e, "Can not properly start BookingService.");
-}
-finally
-{
-  Log.CloseAndFlush();
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+      Host.CreateDefaultBuilder(args)
+        .UseSerilog()
+        .ConfigureWebHostDefaults(webBuilder =>
+        {
+          webBuilder.UseStartup<Startup>();
+        });
+  }
 }
