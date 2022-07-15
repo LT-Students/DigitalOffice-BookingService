@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
+
+	<ItemGroup>
+		<ProjectReference Include="..\BookingService.Models.Db\BookingService.Models.Db.csproj" />
+		<ProjectReference Include="..\BookingService.Models.Dto\BookingService.Models.Dto.csproj" />
+	</ItemGroup>
+
+</Project>
