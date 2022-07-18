@@ -6,6 +6,6 @@ namespace LT.DigitalOffice.BookingService.Validation.Booking.Interfaces
 {
   [AutoInject]
   public interface ICreateBookingValidator : IValidator<CreateBookingRequest>
-    {
-    }
+  {
+  }
 }
