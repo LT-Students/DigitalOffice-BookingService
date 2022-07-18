@@ -9,6 +9,11 @@ namespace LT.DigitalOffice.BookingService.Data.Provider.MsSql.Ef
   {
     public DbSet<DbBooking> Bookings { get; set; }
 
+    public BookingServiceDbContext(DbContextOptions<BookingServiceDbContext> options)
+      : base(options)
+    {
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("LT.DigitalOffice.BookingService.Models.Db"));
