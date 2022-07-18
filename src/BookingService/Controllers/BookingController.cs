@@ -11,8 +11,8 @@ namespace LT.DigitalOffice.BookingService.Controllers
   [ApiController]
   public class BookingController : ControllerBase
   {
-    [HttpPost]
-    public async Task<OperationResultResponse<Guid?>> Create(
+    [HttpPost("create")]
+    public async Task<OperationResultResponse<Guid>> Create(
       [FromBody] CreateBookingRequest request,
       [FromServices] ICreateBookingCommand command)
     {

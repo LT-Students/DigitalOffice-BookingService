@@ -8,6 +8,6 @@ namespace LT.DigitalOffice.BookingService.Broker.Requests.Interfaces
   [AutoInject]
     public interface IOfficeService
     {
-      Task<Guid?> CheckWorkspaceExistence(Guid workspaceId, List<string> errors);
+      Task<bool> CheckWorkspaceExistence(Guid workspaceId, List<string> errors);
     }
 }

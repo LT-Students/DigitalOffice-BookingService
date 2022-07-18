@@ -10,6 +10,7 @@ using LT.DigitalOffice.Kernel.EFSupport.Helpers;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Helpers;
 using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
+using LT.DigitalOffice.Kernel.RedisSupport.Configurations;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -29,11 +30,12 @@ namespace LT.DigitalOffice.BookingService
   public class Startup : BaseApiInfo
   {
     public const string CorsPolicyName = "LtDoCorsPolicy";
+    private string redisConnStr;
 
     private readonly RabbitMqConfig _rabbitMqConfig;
     private readonly BaseServiceInfoConfig _serviceInfoConfig;
 
-    public IConfiguration Configuration { get; }
+    private IConfiguration Configuration { get; }
 
     public Startup(IConfiguration configuration)
     {
@@ -47,8 +49,8 @@ namespace LT.DigitalOffice.BookingService
         .GetSection(BaseServiceInfoConfig.SectionName)
         .Get<BaseServiceInfoConfig>();
 
-      Version = "1.1.7.5";
-      Description = "TimeService is an API intended to work with the users time managment";
+      Version = "1.0.0";
+      Description = "BookingService is an API that intended to work with bookings.";
       StartTime = DateTime.UtcNow;
       ApiName = $"LT Digital Office - {_serviceInfoConfig.Name}";
     }
@@ -70,6 +72,18 @@ namespace LT.DigitalOffice.BookingService
           });
       });
 
+      if (int.TryParse(Environment.GetEnvironmentVariable("RedisCacheLiveInMinutes"), out int redisCacheLifeTime))
+      {
+        services.Configure<RedisConfig>(options =>
+        {
+          options.CacheLiveInMinutes = redisCacheLifeTime;
+        });
+      }
+      else
+      {
+        services.Configure<RedisConfig>(Configuration.GetSection(RedisConfig.SectionName));
+      }
+
       services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
       services.Configure<BaseRabbitMqConfig>(Configuration.GetSection(BaseRabbitMqConfig.SectionName));
       services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
@@ -81,10 +95,7 @@ namespace LT.DigitalOffice.BookingService
         {
           options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         })
-        .AddNewtonsoftJson(options =>
-        {
-          options.SerializerSettings.DateParseHandling = Newtonsoft.Json.DateParseHandling.None;
-        });
+        .AddNewtonsoftJson();
 
       string connStr = ConnectionStringHandler.Get(Configuration);
 
@@ -93,7 +104,11 @@ namespace LT.DigitalOffice.BookingService
         options.UseSqlServer(connStr);
       });
 
-      string redisConnStr = Environment.GetEnvironmentVariable("RedisConnectionString");
+      services.AddHealthChecks()
+        .AddSqlServer(connStr)
+        .AddRabbitMqCheck();
+
+      redisConnStr = Environment.GetEnvironmentVariable("RedisConnectionString");
       if (string.IsNullOrEmpty(redisConnStr))
       {
         redisConnStr = Configuration.GetConnectionString("Redis");
@@ -111,13 +126,6 @@ namespace LT.DigitalOffice.BookingService
       services.AddBusinessObjects();
 
       ConfigureMassTransit(services);
-
-      services.AddMemoryCache();
-
-      services
-        .AddHealthChecks()
-        .AddSqlServer(connStr)
-        .AddRabbitMqCheck();
     }
 
     public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
@@ -187,7 +195,6 @@ namespace LT.DigitalOffice.BookingService
     private void ConfigureMassTransit(IServiceCollection services)
     {
       (string username, string password) = GetRabbitMqCredentials();
-
       services.AddMassTransit(x =>
       {
         x.UsingRabbitMq((_, cfg) =>

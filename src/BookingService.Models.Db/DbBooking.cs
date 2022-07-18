@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using LT.DigitalOffice.Models.Broker.Models.Office;
 
 namespace LT.DigitalOffice.BookingService.Models.Db
 {

@@ -1,19 +1,19 @@
-﻿using LT.DigitalOffice.BookingService.Business.Commands.Booking.Interfaces;
+﻿using FluentValidation.Results;
+using LT.DigitalOffice.BookingService.Business.Commands.Booking.Interfaces;
+using LT.DigitalOffice.BookingService.Data.Booking.Interfaces;
+using LT.DigitalOffice.BookingService.Mappers.Booking.Interfaces;
+using LT.DigitalOffice.BookingService.Models.Db;
 using LT.DigitalOffice.BookingService.Models.Dto.Requests;
+using LT.DigitalOffice.BookingService.Validation.Booking.Interfaces;
+using LT.DigitalOffice.Kernel.Helpers.Interfaces;
 using LT.DigitalOffice.Kernel.Responses;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using FluentValidation.Results;
-using LT.DigitalOffice.BookingService.Data.Booking.Interfaces;
-using LT.DigitalOffice.BookingService.Mappers.Booking.Interfaces;
-using LT.DigitalOffice.BookingService.Models.Db;
-using LT.DigitalOffice.BookingService.Validation.Booking.Interfaces;
 using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Constants;
-using LT.DigitalOffice.Kernel.Helpers.Interfaces;
-using Microsoft.AspNetCore.Http;
 
 namespace LT.DigitalOffice.BookingService.Business.Commands.Booking
 {
@@ -41,23 +41,24 @@ namespace LT.DigitalOffice.BookingService.Business.Commands.Booking
       _httpContextAccessor = httpContextAccessor;
       _responseCreator = responseCreator;
     }
-    public async Task<OperationResultResponse<Guid?>> ExecuteAsync(CreateBookingRequest request)
+    public async Task<OperationResultResponse<Guid>> ExecuteAsync(CreateBookingRequest request)
     {
-      if (!await _accessValidator.HasRightsAsync(Rights.AddEditRemoveBookings))
+    //TODO: Change right
+      if (!await _accessValidator.HasRightsAsync(Rights.AddEditRemovePositions))
       {
-        _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.Forbidden);
+        return _responseCreator.CreateFailureResponse<Guid>(HttpStatusCode.Forbidden);
       }
 
       ValidationResult validationResult = await _validator.ValidateAsync(request);
 
       if (!validationResult.IsValid)
       {
-        _responseCreator.CreateFailureResponse<Guid?>(
+        return _responseCreator.CreateFailureResponse<Guid>(
           HttpStatusCode.BadRequest,
           validationResult.Errors.Select(vf => vf.ErrorMessage).ToList());
       }
 
-      OperationResultResponse<Guid?> response = new();
+      OperationResultResponse<Guid> response = new();
 
       DbBooking booking = _mapper.Map(request);
       await _repository.CreateAsync(booking);

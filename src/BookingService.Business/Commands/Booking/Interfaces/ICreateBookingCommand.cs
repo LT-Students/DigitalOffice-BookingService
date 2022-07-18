@@ -9,6 +9,6 @@ namespace LT.DigitalOffice.BookingService.Business.Commands.Booking.Interfaces
   [AutoInject]
   public interface ICreateBookingCommand
   {
-    Task<OperationResultResponse<Guid?>> ExecuteAsync(CreateBookingRequest request);
+    Task<OperationResultResponse<Guid>> ExecuteAsync(CreateBookingRequest request);
   }
 }
