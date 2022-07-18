@@ -3,11 +3,8 @@
 	<Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\BookingService.Data\BookingService.Data.csproj" />
+		<ProjectReference Include="..\BookingService.Mappers\BookingService.Mappers.csproj" />
 	</ItemGroup>
 
 </Project>
