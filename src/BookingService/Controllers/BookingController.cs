@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.BookingService.Controllers
   public class BookingController : ControllerBase
   {
     [HttpPost("create")]
-    public async Task<OperationResultResponse<Guid>> Create(
+    public async Task<OperationResultResponse<Guid?>> Create(
       [FromBody] CreateBookingRequest request,
       [FromServices] ICreateBookingCommand command)
     {

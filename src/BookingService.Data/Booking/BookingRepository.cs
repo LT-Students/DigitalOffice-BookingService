@@ -21,16 +21,18 @@ namespace LT.DigitalOffice.BookingService.Data.Booking
       _logger = logger;
     }
 
-    public async Task CreateAsync(DbBooking booking)
+    public async Task<Guid?> CreateAsync(DbBooking booking)
     {
-      if (booking == null)
+      if (booking is null)
       {
         _logger.LogWarning(new ArgumentNullException(nameof(booking)).Message);
-        return;
+        return null;
       }
 
       _provider.Bookings.Add(booking);
       await _provider.SaveAsync();
+
+      return booking.Id;
     }
 
     public async Task<bool> HasOverlapAsync(Guid workspaceId, DateTime startTime, DateTime endTime)
