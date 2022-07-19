@@ -1,6 +1,6 @@
 ﻿using LT.DigitalOffice.BookingService.Broker.Requests.Interfaces;
 using LT.DigitalOffice.Kernel.BrokerSupport.Broker;
-using LT.DigitalOffice.Models.Broker.Common;
+using LT.DigitalOffice.Models.Broker.Requests.Office;
 using MassTransit;
 using System;
 using System.Collections.Generic;
@@ -10,9 +10,9 @@ namespace LT.DigitalOffice.BookingService.Broker.Requests
 {
   public class OfficeService : IOfficeService
   {
-    private readonly IRequestClient<ICheckWorkspaceIsBookable> _rcCheckWorkspaceExistence;
+    private readonly IRequestClient<ICheckWorkspaceIsBookableRequest> _rcCheckWorkspaceExistence;
 
-    public OfficeService(IRequestClient<ICheckWorkspaceIsBookable> rcCheckWorkspaceExistence)
+    public OfficeService(IRequestClient<ICheckWorkspaceIsBookableRequest> rcCheckWorkspaceExistence)
     {
       _rcCheckWorkspaceExistence = rcCheckWorkspaceExistence;
     }
@@ -21,7 +21,7 @@ namespace LT.DigitalOffice.BookingService.Broker.Requests
     {
       Response<IOperationResult<bool>> result =
         await _rcCheckWorkspaceExistence.GetResponse<IOperationResult<bool>>(
-          ICheckWorkspaceIsBookable.CreateObj(workspaceId));
+          ICheckWorkspaceIsBookableRequest.CreateObj(workspaceId));
 
       if (result.Message is null)
       {

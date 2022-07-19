@@ -42,8 +42,7 @@ namespace LT.DigitalOffice.BookingService.Business.Commands.Booking
     }
     public async Task<OperationResultResponse<Guid?>> ExecuteAsync(CreateBookingRequest request)
     {
-    //TODO: Change right
-      if (!await _accessValidator.HasRightsAsync(Rights.AddEditRemovePositions))
+      if (!await _accessValidator.HasRightsAsync(Rights.AddEditRemoveCompanyData))
       {
         return _responseCreator.CreateFailureResponse<Guid?>(HttpStatusCode.Forbidden);
       }

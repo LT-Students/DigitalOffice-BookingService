@@ -49,7 +49,7 @@ namespace LT.DigitalOffice.BookingService
         .GetSection(BaseServiceInfoConfig.SectionName)
         .Get<BaseServiceInfoConfig>();
 
-      Version = "1.0.0";
+      Version = "1.0.0.0";
       Description = "BookingService is an API that intended to work with bookings.";
       StartTime = DateTime.UtcNow;
       ApiName = $"LT Digital Office - {_serviceInfoConfig.Name}";
