@@ -23,12 +23,6 @@ namespace LT.DigitalOffice.BookingService.Models.Db
       builder.ToTable(DbBooking.TableName);
 
       builder.HasKey(t => t.Id);
-
-      builder.Property(w => w.WorkspaceId).IsRequired();
-
-      builder.Property(st => st.StartTime).IsRequired();
-
-      builder.Property(et => et.EndTime).IsRequired();
     }
   }
 }

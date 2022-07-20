@@ -3,7 +3,6 @@ using LT.DigitalOffice.Kernel.BrokerSupport.Broker;
 using LT.DigitalOffice.Models.Broker.Requests.Office;
 using MassTransit;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.BookingService.Broker.Requests
@@ -17,7 +16,7 @@ namespace LT.DigitalOffice.BookingService.Broker.Requests
       _rcCheckWorkspaceExistence = rcCheckWorkspaceExistence;
     }
 
-    public async Task<bool> CheckWorkspaceExistence(Guid workspaceId, List<string> errors)
+    public async Task<bool> CheckWorkspaceExistence(Guid workspaceId)
     {
       Response<IOperationResult<bool>> result =
         await _rcCheckWorkspaceExistence.GetResponse<IOperationResult<bool>>(

@@ -40,6 +40,7 @@ namespace LT.DigitalOffice.BookingService.Business.Commands.Booking
       _httpContextAccessor = httpContextAccessor;
       _responseCreator = responseCreator;
     }
+
     public async Task<OperationResultResponse<Guid?>> ExecuteAsync(CreateBookingRequest request)
     {
       if (!await _accessValidator.HasRightsAsync(Rights.AddEditRemoveCompanyData))
