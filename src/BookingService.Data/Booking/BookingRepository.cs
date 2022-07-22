@@ -35,9 +35,9 @@ namespace LT.DigitalOffice.BookingService.Data.Booking
       return booking.Id;
     }
 
-    public async Task<bool> HasOverlapAsync(Guid workspaceId, DateTime startTime, DateTime endTime)
+    public Task<bool> HasOverlapAsync(Guid workspaceId, DateTime startTime, DateTime endTime)
     {
-      return await _provider.Bookings.AnyAsync(b =>
+      return _provider.Bookings.AnyAsync(b =>
         b.IsActive
         && b.WorkspaceId == workspaceId
         &&
